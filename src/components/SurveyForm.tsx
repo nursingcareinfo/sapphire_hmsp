@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExtractedData } from './types';
+import { ExtractedData } from '../types';
 
 interface SurveyResponse {
   section_1: Record<string, any>;
@@ -210,13 +210,13 @@ export default function SurveyForm({ extracted, onSubmit, onBack }: Props) {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Total experience <span className="text-rose-500">*</span></label>
                 <select value={data.section_2.total_experience} onChange={(e) => update(2, 'total_experience', e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm">
-                  <option value="">Select</option><option>< 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>> 10 years</option>
+                  <option value="">Select</option><option>{'< 1 year'}</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>{'> 10 years'}</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Home nursing experience <span className="text-rose-500">*</span></label>
                 <select value={data.section_2.home_nursing_experience} onChange={(e) => update(2, 'home_nursing_experience', e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm">
-                  <option value="">Select</option><option>None</option><option>< 1 year</option><option>1–3 years</option><option>> 3 years</option>
+                  <option value="">Select</option><option>None</option><option>{'< 1 year'}</option><option>1–3 years</option><option>{'> 3 years'}</option>
                 </select>
               </div>
             </div>
@@ -269,7 +269,7 @@ export default function SurveyForm({ extracted, onSubmit, onBack }: Props) {
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Hours/week available <span className="text-rose-500">*</span></label>
               <select value={data.section_4.hours_per_week} onChange={(e) => update(4, 'hours_per_week', e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm">
-                <option value="">Select</option><option>< 10 hrs</option><option>10–20 hrs</option><option>20–40 hrs</option><option>Full-time 40+</option><option>Flexible</option>
+                <option value="">Select</option><option>{'< 10 hrs'}</option><option>10–20 hrs</option><option>20–40 hrs</option><option>Full-time 40+</option><option>Flexible</option>
               </select>
             </div>
             <div>

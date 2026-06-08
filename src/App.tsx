@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, type FormEvent } from 'react';
 import { supabase } from './utils/supabase';
 import type { ExtractedData, SurveyResponse } from './types';
+import SurveyForm from './components/SurveyForm';
 
 type Step = 'upload' | 'survey' | 'done';
 
@@ -24,7 +25,7 @@ export default function App() {
     });
   };
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleUpload = async (e: FormEvent) => {
     e.preventDefault();
     if (!frontRef.current) {
       setOcrError("PNC Front image is required");
