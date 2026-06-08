@@ -34,10 +34,36 @@ export default function App() {
   const [dbRecords, setDbRecords] = useState<any[]>([]);
   const [lastSaved, setLastSaved] = useState<any | null>(null);
 
-  // Load database records on startup
+  // Real-time Supabase connection health states
+  const [supabaseActive, setSupabaseActive] = useState<boolean | null>(null);
+  const [supabaseDetails, setSupabaseDetails] = useState<any>(null);
+  const [isTestingConnection, setIsTestingConnection] = useState<boolean>(false);
+
+  // Load database records and check connection health on startup
   useEffect(() => {
-    fetchSavedRecords();
+    checkConnectionAndFetch();
   }, [activeUser]);
+
+  const checkConnectionAndFetch = async () => {
+    setIsTestingConnection(true);
+    try {
+      const res = await fetch('/api/health');
+      if (res.ok) {
+        const health = await res.json();
+        setSupabaseActive(!!health.supabaseActive);
+        if (health.details) {
+          setSupabaseDetails(health.details);
+        }
+      } else {
+        setSupabaseActive(false);
+      }
+    } catch (e) {
+      setSupabaseActive(false);
+    } finally {
+      setIsTestingConnection(false);
+    }
+    await fetchSavedRecords();
+  };
 
   const fetchSavedRecords = async () => {
     try {
@@ -187,10 +213,53 @@ export default function App() {
               <span>Row Level Security (RLS) Active</span>
             </div>
 
+            <button
+              onClick={checkConnectionAndFetch}
+              disabled={isTestingConnection}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-[11px] border cursor-pointer ${
+                supabaseActive === true
+                  ? 'bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100'
+                  : supabaseActive === false
+                  ? 'bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100'
+                  : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
+              }`}
+              title="Dynamic testing connection with current environment keys"
+            >
+              <Database className={`w-3.5 h-3.5 ${isTestingConnection ? 'animate-spin' : ''}`} />
+              <span className="font-medium">
+                {isTestingConnection ? "Checking..." : supabaseActive === true ? "Supabase Connected" : "Supabase Offline / Local Fallback"}
+              </span>
+              <span className="text-[9px] bg-slate-200 text-slate-800 px-1 py-0.2 rounded font-mono">Test</span>
+            </button>
+
           </div>
 
         </div>
       </header>
+
+      {/* Conditionally reveal accidental self-referential loops or invalid URL configuration help */}
+      {supabaseDetails?.isSelfReferential && (
+        <div className="max-w-7xl mx-auto px-6 pt-6" id="supabase-misconfig-warning">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-sans shadow-sm leading-relaxed">
+            <div className="flex items-start gap-3">
+              <span className="text-xl shrink-0 mt-0.5">⚠️</span>
+              <div>
+                <h4 className="font-semibold text-amber-900 text-sm mb-1">Accidental App URL detected in SUPABASE_URL</h4>
+                Your environment variable <code className="font-mono bg-amber-100/70 px-1.5 py-0.5 rounded border border-amber-200">SUPABASE_URL</code> appears to copy-paste your preview application's web URL (ending in <code className="font-mono text-amber-900 bg-amber-100 font-semibold px-1 py-0.2">.run.app</code>) instead of your live Supabase Database API endpoint.
+                <div className="mt-2 text-[11px] text-amber-700">
+                  <strong>To resolve this:</strong> Go to your <span className="underline font-medium">Supabase Workspace → Settings → API</span>, copy the <strong>Project URL</strong> (usually looking like <code className="font-mono">https://xxxxxx.supabase.co</code>), then save it in your Secrets panel in AI Studio or your <code className="font-mono">.env</code> file.
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={checkConnectionAndFetch}
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-xl transition-all self-start md:self-auto shadow-sm cursor-pointer whitespace-nowrap font-sans text-xs"
+            >
+              Recheck Connection
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Dashboard */}
       <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8" id="dashboard-layout-grid">

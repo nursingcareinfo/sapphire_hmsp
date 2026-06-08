@@ -29,18 +29,104 @@ function getGeminiClient() {
   return aiClient;
 }
 
+function getSupabaseUrl() {
+  let supabaseUrl = (process.env.SUPABASE_URL || "").trim();
+
+  // Clean surrounding quotes (common copy-paste error)
+  if (supabaseUrl.startsWith('"') && supabaseUrl.endsWith('"')) {
+    supabaseUrl = supabaseUrl.slice(1, -1).trim();
+  }
+  if (supabaseUrl.startsWith("'") && supabaseUrl.endsWith("'")) {
+    supabaseUrl = supabaseUrl.slice(1, -1).trim();
+  }
+
+  // Auto-correct 1: Extract project ref if they mistakenly supplied the Supabase MCP Server URL
+  if (supabaseUrl.includes("project_ref=")) {
+    const match = supabaseUrl.match(/[?&]project_ref=([^&]+)/);
+    if (match && match[1]) {
+      const ref = match[1].trim();
+      console.log(`[SUPABASE CONFIG CORRECTION] Extracted Ref "${ref}" from MCP-style server URL.`);
+      supabaseUrl = `https://${ref}.supabase.co`;
+    }
+  }
+
+  // Auto-correct 2: If they supplied just the raw 20-char project ref (e.g. qbacpgorqgwinpyaswki)
+  if (supabaseUrl && !supabaseUrl.startsWith("http://") && !supabaseUrl.startsWith("https://") && supabaseUrl.length === 20 && /^[a-z0-9]+$/.test(supabaseUrl)) {
+    console.log(`[SUPABASE CONFIG CORRECTION] Converting raw project ref "${supabaseUrl}" to supabase.co URL.`);
+    supabaseUrl = `https://${supabaseUrl}.supabase.co`;
+  }
+
+  // Auto-correct 3: Strip trailing slashes and /rest/v1 suffixes
+  while (supabaseUrl.endsWith('/')) {
+    supabaseUrl = supabaseUrl.slice(0, -1).trim();
+  }
+  if (supabaseUrl.endsWith('/rest/v1')) {
+    supabaseUrl = supabaseUrl.slice(0, -8).trim();
+  }
+  if (supabaseUrl.endsWith('/rest')) {
+    supabaseUrl = supabaseUrl.slice(0, -5).trim();
+  }
+  while (supabaseUrl.endsWith('/')) {
+    supabaseUrl = supabaseUrl.slice(0, -1).trim();
+  }
+
+  return supabaseUrl;
+}
+
 // Supabase client instance with automatic hot-reload / fetch
 let supabaseInstance: any = null;
+let lastUsedUrl = "";
+let lastUsedKey = "";
 
 function getSupabaseClient() {
+  const supabaseUrl = getSupabaseUrl();
+  let supabaseKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "").trim();
+
+  if (supabaseKey.startsWith('"') && supabaseKey.endsWith('"')) {
+    supabaseKey = supabaseKey.slice(1, -1).trim();
+  }
+  if (supabaseKey.startsWith("'") && supabaseKey.endsWith("'")) {
+    supabaseKey = supabaseKey.slice(1, -1).trim();
+  }
+
+  // Force re-initialization if the configuration changes
+  if (supabaseUrl !== lastUsedUrl || supabaseKey !== lastUsedKey) {
+    console.log(`[SUPABASE] Configuration change detected. Re-initializing client...`);
+    supabaseInstance = null;
+    lastUsedUrl = supabaseUrl;
+    lastUsedKey = supabaseKey;
+  }
+
   if (!supabaseInstance) {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
-    if (supabaseUrl && supabaseKey) {
+    // Safety checks: skip placeholder values or self-referential URLs pointing back to this app
+    const isMockOrPlaceholder = !supabaseUrl || 
+                                supabaseUrl.includes("YOUR_") || 
+                                supabaseUrl.includes("MY_APP_URL");
+
+    const isSelfReferential = supabaseUrl.includes("run.app") || 
+                              supabaseUrl.includes("localhost") || 
+                              supabaseUrl.includes("127.0.0.1") ||
+                              (process.env.APP_URL && supabaseUrl.includes(process.env.APP_URL));
+
+    const isValidUrl = (supabaseUrl.startsWith("http://") || supabaseUrl.startsWith("https://")) && 
+                       !isMockOrPlaceholder && 
+                       !isSelfReferential;
+
+    const isValidKey = supabaseKey.length > 10 && !supabaseKey.includes("YOUR_");
+
+    if (isValidUrl && isValidKey) {
       console.log(`[SUPABASE] Initializing Supabase client. URL: ${supabaseUrl}`);
-      supabaseInstance = createClient(supabaseUrl, supabaseKey);
+      try {
+        supabaseInstance = createClient(supabaseUrl, supabaseKey);
+      } catch (err: any) {
+        console.error(`[SUPABASE INIT ERROR] Failed creating client:`, err);
+        supabaseInstance = null;
+      }
     } else {
-      console.warn("[SUPABASE] Client not initialized. Missing environment variables.");
+      if (supabaseUrl || supabaseKey) {
+        console.warn(`[SUPABASE INIT REJECTED] URL: "${supabaseUrl || 'EMPTY'}" | Key: "${supabaseKey ? 'PRESENT' : 'EMPTY'}" | Self-referential: ${isSelfReferential}`);
+      }
+      return null;
     }
   }
   return supabaseInstance;
@@ -59,10 +145,33 @@ async function startServer() {
 
   // API Route: Healthcheck
   app.get("/api/health", (req, res) => {
+    const supabaseUrl = getSupabaseUrl();
+
+    const isSelfReferential = supabaseUrl.includes("run.app") || 
+                              supabaseUrl.includes("localhost") || 
+                              supabaseUrl.includes("127.0.0.1") ||
+                              (process.env.APP_URL && supabaseUrl.includes(process.env.APP_URL));
+
+    const isMockOrPlaceholder = !supabaseUrl || 
+                                supabaseUrl.includes("YOUR_") || 
+                                supabaseUrl.includes("MY_APP_URL");
+
+    const hasUrl = !!supabaseUrl && !isMockOrPlaceholder;
+    const hasKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY);
+
+    // Force re-initialization check if url changed
+    const client = getSupabaseClient();
+
     res.json({ 
       status: "ok", 
       time: new Date().toISOString(),
-      supabaseActive: !!getSupabaseClient()
+      supabaseActive: !!client,
+      details: {
+        hasUrl,
+        hasKey,
+        isSelfReferential,
+        urlPreview: supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : null
+      }
     });
   });
 
@@ -119,7 +228,12 @@ async function startServer() {
           return res.json(joinedRecords);
         }
       } catch (err: any) {
-        console.warn(`[SUPABASE FALLBACK WARNING] Read failed. Tables may need schema update or are not provisioned yet: ${err.message || err}`);
+        const errMsg = err?.message || String(err);
+        if (errMsg.includes("Could not find the table") || errMsg.includes("does not exist") || errMsg.includes("relation") || errMsg.includes("schema cache")) {
+          console.log(`[SUPABASE] Table 'public.nurses' is not provisioned yet. Operating with local developer storage.`);
+        } else {
+          console.log(`[SUPABASE READ INFO] Operating local storage: ${errMsg}`);
+        }
       }
     }
 
@@ -199,7 +313,12 @@ async function startServer() {
         console.log(`[SUPABASE] Save completed successfully to live DB: ${uid}`);
 
       } catch (err: any) {
-        console.warn(`[SUPABASE FALLBACK WARNING] Write failed: ${err.message || err}. Saving to simulated local store instead.`);
+        const errMsg = err?.message || String(err);
+        if (errMsg.includes("Could not find the table") || errMsg.includes("does not exist") || errMsg.includes("relation") || errMsg.includes("schema cache")) {
+          console.log(`[SUPABASE] Database tables are not provisioned yet. Saving update with local developer storage.`);
+        } else {
+          console.log(`[SUPABASE WRITE INFO] Saved update with local storage: ${errMsg}`);
+        }
       }
     }
 
