@@ -1,0 +1,549 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.form-wrap{max-width:680px;padding:0 0 2rem}
+.hero{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary)}
+.hero-title{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:var(--border-radius-md);margin-bottom:10px}
+.badge-teal{background:#E1F5EE;color:#0F6E56}
+.section{margin-bottom:1.5rem;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.section-header{padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:10px}
+.section-num{width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#0F6E56;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.section-body{padding:1.25rem}
+.field{margin-bottom:1.25rem}
+.field:last-child{margin-bottom:0}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+label{display:block;font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;font-weight:500}
+.req{color:#D85A30;margin-left:2px}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{width:100%;padding:8px 12px;font-size:14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1D9E75}
+textarea{min-height:80px;resize:vertical;line-height:1.5}
+.hint{font-size:12px;color:var(--color-text-tertiary);margin-top:4px}
+.radio-group,.check-group{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.radio-item,.check-item{display:flex;align-items:flex-start;gap:8px;cursor:pointer}
+.radio-item input,.check-item input{margin-top:3px;accent-color:#1D9E75;flex-shrink:0}
+.radio-label,.check-label{font-size:14px;color:var(--color-text-primary);line-height:1.4}
+.scale-row{display:flex;gap:0;margin-top:6px}
+.scale-btn{flex:1;padding:8px 4px;font-size:13px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all 0.12s;text-align:center}
+.scale-btn:first-child{border-radius:var(--border-radius-md) 0 0 var(--border-radius-md)}
+.scale-btn:last-child{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0}
+.scale-btn:not(:first-child){border-left:0}
+.scale-btn.active{background:#1D9E75;color:#fff;border-color:#1D9E75;z-index:1}
+.scale-labels{display:flex;justify-content:space-between;margin-top:4px}
+.scale-labels span{font-size:11px;color:var(--color-text-tertiary)}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1rem 0}
+.submit-area{text-align:center;padding-top:0.5rem}
+.submit-btn{background:#1D9E75;color:#fff;border:none;padding:12px 48px;font-size:15px;font-weight:500;border-radius:var(--border-radius-md);cursor:pointer;font-family:var(--font-sans);transition:opacity 0.15s}
+.submit-btn:hover{opacity:0.88}
+.progress-bar{background:var(--color-background-secondary);border-radius:4px;height:4px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:#1D9E75;border-radius:4px;width:0%;transition:width 0.3s}
+.consent-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:1rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.tag-select{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag-btn{padding:6px 14px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:20px;background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all 0.12s;font-family:var(--font-sans)}
+.tag-btn.selected{background:#E1F5EE;color:#0F6E56;border-color:#1D9E75}
+</style>
+
+<div class="form-wrap" role="main">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Nurse registration and viability survey form for HMSP home nursing platform in Pakistan</h2>
+
+<div class="hero">
+  <span class="badge badge-teal"><i class="ti ti-stethoscope" aria-hidden="true"></i> H.M.S.P Nurse Survey 2026</span>
+  <div class="hero-title">Home Nursing Platform — Nurse Registration & Viability Survey</div>
+  <div class="hero-sub">This survey is for Registered Nurses in Pakistan. Your responses will help us build a better home nursing platform tailored to your needs. All data is kept strictly confidential and used only for product research. Estimated time: 8–12 minutes.</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title">Personal information</div>
+  </div>
+  <div class="section-body">
+    <div class="field-row">
+      <div class="field">
+        <label>Full name <span class="req">*</span></label>
+        <input type="text" placeholder="As on CNIC / PNC license" oninput="updateProgress()">
+      </div>
+      <div class="field">
+        <label>Gender <span class="req">*</span></label>
+        <select onchange="updateProgress()">
+          <option value="">Select</option>
+          <option>Female</option>
+          <option>Male</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Date of birth <span class="req">*</span></label>
+        <input type="date" oninput="updateProgress()">
+      </div>
+      <div class="field">
+        <label>CNIC number <span class="req">*</span></label>
+        <input type="text" placeholder="XXXXX-XXXXXXX-X" maxlength="15">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Mobile number <span class="req">*</span></label>
+        <input type="tel" placeholder="+92 3XX XXXXXXX">
+      </div>
+      <div class="field">
+        <label>WhatsApp number</label>
+        <input type="tel" placeholder="Same as mobile or different">
+      </div>
+    </div>
+    <div class="field">
+      <label>Email address</label>
+      <input type="email" placeholder="optional but recommended">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>City of residence <span class="req">*</span></label>
+        <select onchange="updateProgress()">
+          <option value="">Select city</option>
+          <option>Karachi</option>
+          <option>Lahore</option>
+          <option>Islamabad</option>
+          <option>Rawalpindi</option>
+          <option>Peshawar</option>
+          <option>Quetta</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Area / neighbourhood <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. DHA Phase 5, Gulshan">
+      </div>
+    </div>
+    <div class="field">
+      <label>Do you own a vehicle or have reliable transport? <span class="req">*</span></label>
+      <select>
+        <option value="">Select</option>
+        <option>Yes — own motorcycle</option>
+        <option>Yes — own car</option>
+        <option>No — use public transport</option>
+        <option>No — depend on family/rickshaw</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title">PNC license & professional credentials</div>
+  </div>
+  <div class="section-body">
+    <div class="field-row">
+      <div class="field">
+        <label>PNC license number <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. PNC-XXXXX">
+        <div class="hint">Pakistan Nursing Council registration number</div>
+      </div>
+      <div class="field">
+        <label>PNC license expiry date <span class="req">*</span></label>
+        <input type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label>Professional qualification <span class="req">*</span></label>
+      <select>
+        <option value="">Select highest qualification</option>
+        <option>Diploma in General Nursing (DGN)</option>
+        <option>Bachelor of Science in Nursing (BSN)</option>
+        <option>Post-RN BSN</option>
+        <option>Master of Science in Nursing (MSN)</option>
+        <option>Lady Health Visitor (LHV)</option>
+        <option>Nurse Aide / Auxiliary Nurse</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Specialisation / clinical area</label>
+      <div class="tag-select" id="specTags">
+        <button class="tag-btn" onclick="toggleTag(this)">General nursing</button>
+        <button class="tag-btn" onclick="toggleTag(this)">ICU / CCU</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Paediatrics</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Oncology</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Orthopaedics</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Cardiac care</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Post-surgical</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Geriatric care</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Wound care</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Maternity / midwifery</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Physiotherapy assist</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Dialysis</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Total years of experience <span class="req">*</span></label>
+        <select>
+          <option value="">Select</option>
+          <option>Less than 1 year</option>
+          <option>1 – 2 years</option>
+          <option>3 – 5 years</option>
+          <option>6 – 10 years</option>
+          <option>More than 10 years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Experience in home nursing <span class="req">*</span></label>
+        <select>
+          <option value="">Select</option>
+          <option>None — no prior home nursing</option>
+          <option>Less than 1 year</option>
+          <option>1 – 3 years</option>
+          <option>More than 3 years</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Name of institution(s) where currently or previously employed</label>
+      <input type="text" placeholder="e.g. Aga Khan Hospital, Liaquat National...">
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title">Current employment & income</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Current employment status <span class="req">*</span></label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="emp" value="full"> <span class="radio-label">Full-time employed at hospital / clinic</span></label>
+        <label class="radio-item"><input type="radio" name="emp" value="part"> <span class="radio-label">Part-time employed</span></label>
+        <label class="radio-item"><input type="radio" name="emp" value="home"> <span class="radio-label">Currently doing home nursing only</span></label>
+        <label class="radio-item"><input type="radio" name="emp" value="unemployed"> <span class="radio-label">Currently unemployed / seeking work</span></label>
+        <label class="radio-item"><input type="radio" name="emp" value="freelance"> <span class="radio-label">Freelance / self-employed</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Average monthly income from primary employment (PKR) <span class="req">*</span></label>
+      <select>
+        <option value="">Select range</option>
+        <option>Below Rs. 20,000</option>
+        <option>Rs. 20,000 – 35,000</option>
+        <option>Rs. 35,001 – 50,000</option>
+        <option>Rs. 50,001 – 75,000</option>
+        <option>Rs. 75,001 – 1,00,000</option>
+        <option>Above Rs. 1,00,000</option>
+        <option>Not currently employed</option>
+        <option>Prefer not to say</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Do you currently earn any supplemental income from home nursing or private patients?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="supp" value="yes"> <span class="radio-label">Yes</span></label>
+        <label class="radio-item"><input type="radio" name="supp" value="no"> <span class="radio-label">No</span></label>
+      </div>
+    </div>
+    <div class="field" id="suppIncome" style="display:none">
+      <label>If yes — average monthly supplemental income (PKR)</label>
+      <select>
+        <option value="">Select range</option>
+        <option>Below Rs. 10,000</option>
+        <option>Rs. 10,000 – 25,000</option>
+        <option>Rs. 25,001 – 50,000</option>
+        <option>Above Rs. 50,000</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>If offered fair pay, how much would you expect per shift for home nursing? <span class="req">*</span></label>
+      <select>
+        <option value="">Select</option>
+        <option>Rs. 800 – 1,200 per 8-hour shift</option>
+        <option>Rs. 1,200 – 1,800 per 8-hour shift</option>
+        <option>Rs. 1,800 – 2,500 per 8-hour shift</option>
+        <option>Rs. 2,500 – 3,500 per 8-hour shift</option>
+        <option>Above Rs. 3,500 per shift</option>
+        <option>I prefer a monthly retainer model</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title">Availability & work preferences</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>How many hours per week are you available for home nursing work? <span class="req">*</span></label>
+      <select>
+        <option value="">Select</option>
+        <option>Less than 10 hours/week</option>
+        <option>10 – 20 hours/week (1–2 shifts)</option>
+        <option>20 – 40 hours/week (3–5 shifts)</option>
+        <option>Full time (40+ hours)</option>
+        <option>Flexible — depends on the case</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Which shifts are you available for? (Select all that apply)</label>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Morning (7 AM – 3 PM)</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Evening (3 PM – 11 PM)</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Night (11 PM – 7 AM)</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">12-hour shifts</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">24-hour live-in shifts</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Hourly / on-call only</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Are you willing to travel to patient homes outside your immediate area?</label>
+      <select>
+        <option value="">Select</option>
+        <option>Yes — within 5 km radius</option>
+        <option>Yes — within 10 km radius</option>
+        <option>Yes — anywhere in the city</option>
+        <option>No — only patients near my home</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Would you consider transitioning to home nursing as your primary employment? <span class="req">*</span></label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="transition"> <span class="radio-label">Yes — I am actively looking to switch</span></label>
+        <label class="radio-item"><input type="radio" name="transition"> <span class="radio-label">Yes — if income is equal to or better than hospital pay</span></label>
+        <label class="radio-item"><input type="radio" name="transition"> <span class="radio-label">No — I prefer to keep it as supplemental work</span></label>
+        <label class="radio-item"><input type="radio" name="transition"> <span class="radio-label">Unsure — would need more information</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>What type of patients would you prefer to work with? (Select all that apply)</label>
+      <div class="two-col">
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Post-surgical recovery</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Elderly / geriatric care</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Critical / ICU-level care</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Stroke / paralysis patients</span></label>
+        </div>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Paediatric / newborn care</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Cancer / palliative care</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">Mother & baby care</span></label>
+          <label class="check-item"><input type="checkbox"> <span class="check-label">General assistance / ADLs</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title">Direct patient interaction & personal safety</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>How comfortable are you working alone with patients at their home? <span class="req">*</span></label>
+      <div class="scale-row" id="scale1">
+        <button class="scale-btn" onclick="setScale('scale1',this,1)">1</button>
+        <button class="scale-btn" onclick="setScale('scale1',this,2)">2</button>
+        <button class="scale-btn" onclick="setScale('scale1',this,3)">3</button>
+        <button class="scale-btn" onclick="setScale('scale1',this,4)">4</button>
+        <button class="scale-btn" onclick="setScale('scale1',this,5)">5</button>
+      </div>
+      <div class="scale-labels"><span>Not comfortable at all</span><span>Completely comfortable</span></div>
+    </div>
+    <div class="divider"></div>
+    <div class="field">
+      <label>Have you experienced any of the following challenges in home nursing? (Select all that apply)</label>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Patients or family members behaving disrespectfully or making unreasonable demands</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Feeling unsafe in an unfamiliar neighbourhood or household</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Delayed or non-payment by patients / agencies</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Lack of proper equipment or supplies at the patient's home</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">No support channel if an emergency arose during the shift</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Being asked to perform tasks beyond the agreed scope of care</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Harassment or inappropriate behaviour</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Isolation — no colleague to consult during the shift</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">I have not done home nursing — no prior experience</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>What are your biggest fears or concerns about home nursing? (Select all that apply)</label>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Personal safety, especially as a female nurse</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Being blamed if a patient's condition worsens at home</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">No legal protection or formal employment contract</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Families not following care instructions, creating risk</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Irregular or unpredictable income</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Lack of emergency backup if patient deteriorates</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Social stigma around nurses doing private home work</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">No career growth compared to hospital employment</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Would you feel safer working through a registered platform that verifies patient households, provides contracts, and offers emergency support?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="safer"> <span class="radio-label">Yes — it would significantly increase my confidence</span></label>
+        <label class="radio-item"><input type="radio" name="safer"> <span class="radio-label">Somewhat — but I would still have concerns</span></label>
+        <label class="radio-item"><input type="radio" name="safer"> <span class="radio-label">No — I don't feel unsafe working privately</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Please describe any specific incident or concern in your own words (optional)</label>
+      <textarea placeholder="Share your experience or concern. Your response is completely confidential."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-title">App & platform viability</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Are you aware of any app or digital platform for home nursing in Pakistan? <span class="req">*</span></label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="aware"> <span class="radio-label">Yes — I have used one</span></label>
+        <label class="radio-item"><input type="radio" name="aware"> <span class="radio-label">Yes — I know of one but haven't used it</span></label>
+        <label class="radio-item"><input type="radio" name="aware"> <span class="radio-label">No — I am not aware of any such platform</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>How do you currently find home nursing work? (Select all that apply)</label>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Through a nursing agency</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Word of mouth / personal referrals</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">WhatsApp groups</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Facebook / social media</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Hospital referral</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">I don't currently do home nursing</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>How viable do you think a home nursing app is in Pakistan's current market? <span class="req">*</span></label>
+      <div class="scale-row" id="scale2">
+        <button class="scale-btn" onclick="setScale('scale2',this,1)">1</button>
+        <button class="scale-btn" onclick="setScale('scale2',this,2)">2</button>
+        <button class="scale-btn" onclick="setScale('scale2',this,3)">3</button>
+        <button class="scale-btn" onclick="setScale('scale2',this,4)">4</button>
+        <button class="scale-btn" onclick="setScale('scale2',this,5)">5</button>
+      </div>
+      <div class="scale-labels"><span>Not viable at all</span><span>Extremely viable</span></div>
+    </div>
+    <div class="divider"></div>
+    <div class="field">
+      <label>Which features would be most important to you as a nurse on such a platform? Rank your top 3 priorities.</label>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Verified patient profiles and background-checked households</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Guaranteed and on-time payment after each shift</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Advance salary / emergency loan facility</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Shift management and scheduling via WhatsApp</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">24/7 emergency support line during shifts</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Digital attendance and payslip record</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Ability to rate and review patients / families</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Legal contract for every assignment</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Training and CPD (Continuing Professional Development) resources</span></label>
+        <label class="check-item"><input type="checkbox"> <span class="check-label">Option to set availability and decline unsuitable cases</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Would you recommend such a platform to other nurses you know?</label>
+      <div class="scale-row" id="scale3">
+        <button class="scale-btn" onclick="setScale('scale3',this,1)">1</button>
+        <button class="scale-btn" onclick="setScale('scale3',this,2)">2</button>
+        <button class="scale-btn" onclick="setScale('scale3',this,3)">3</button>
+        <button class="scale-btn" onclick="setScale('scale3',this,4)">4</button>
+        <button class="scale-btn" onclick="setScale('scale3',this,5)">5</button>
+      </div>
+      <div class="scale-labels"><span>Definitely not</span><span>Definitely yes</span></div>
+    </div>
+    <div class="field">
+      <label>What is the single biggest barrier to nurses adopting such a platform in Pakistan?</label>
+      <textarea placeholder="e.g. trust, internet access, training, agency monopoly, payment reliability..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div class="section-title">Final remarks</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Is there anything else you would like us to know — about your experience, expectations, or what would make this platform work for nurses like you?</label>
+      <textarea style="min-height:100px" placeholder="Your honest input shapes the product. No response is too long or too short."></textarea>
+    </div>
+    <div class="field">
+      <label>May we contact you for a follow-up interview? (Compensated 30-minute call)</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="followup"> <span class="radio-label">Yes — happy to participate</span></label>
+        <label class="radio-item"><input type="radio" name="followup"> <span class="radio-label">No — survey only</span></label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="consent-box">
+  <strong style="color:var(--color-text-primary)">Data privacy & consent</strong><br>
+  By submitting this form you consent to H.M.S.P storing your responses for product research purposes. Your PNC license and CNIC numbers are collected solely for professional verification. No data will be shared with third parties or your employer. You may request deletion of your data at any time by contacting <span style="color:#1D9E75">research@hmsp.pk</span>
+</div>
+
+<div class="field">
+  <label class="check-item" style="cursor:pointer"><input type="checkbox" id="consentCheck" onchange="updateProgress()"> <span class="check-label">I have read and agree to the data privacy statement above <span class="req">*</span></span></label>
+</div>
+
+<div class="submit-area">
+  <button class="submit-btn" onclick="handleSubmit()">Submit survey <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+</div>
+
+</div>
+
+<script>
+function toggleTag(el){el.classList.toggle('selected')}
+
+function setScale(id,btn,val){
+  document.querySelectorAll('#'+id+' .scale-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+document.querySelectorAll('input[name="supp"]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    document.getElementById('suppIncome').style.display = r.value==='yes'?'block':'none';
+  });
+});
+
+function updateProgress(){
+  const fields = [
+    document.querySelector('input[type=text]'),
+    document.querySelectorAll('select')[0],
+    document.querySelector('input[type=date]'),
+    document.querySelectorAll('select')[3],
+    document.getElementById('consentCheck')
+  ];
+  let filled = fields.filter(f=>f&&(f.value||f.checked)).length;
+  const scaleActive = document.querySelectorAll('.scale-btn.active').length;
+  const total = 5 + 3;
+  const pct = Math.round(Math.min(100, ((filled + scaleActive)/total)*100));
+  document.getElementById('progress').style.width = pct+'%';
+}
+
+function handleSubmit(){
+  const consent = document.getElementById('consentCheck');
+  if(!consent.checked){
+    consent.parentElement.style.outline='2px solid #D85A30';
+    consent.parentElement.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  sendPrompt('The nurse survey form has been filled and submitted. Can you show me what a sample analysis dashboard of the collected survey responses would look like — with charts for viability scores, income distribution, availability hours, and top concerns?');
+}
+</script>

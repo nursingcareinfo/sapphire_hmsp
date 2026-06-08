@@ -33,6 +33,7 @@
     "esbuild": "^0.25.0",
     "gh-pages": "^6.3.0",
     "husky": "^9.1.7",
+    "supabase": "^2.105.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
