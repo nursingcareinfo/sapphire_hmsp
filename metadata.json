@@ -1,0 +1,6 @@
+{
+  "name": "Nurse Registration & PNC Credential Portal",
+  "description": "High-compliance OCR registrar and registration platform that cross-references PNC cards and CVs with Gap Analysis and Row-Level Security checks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
